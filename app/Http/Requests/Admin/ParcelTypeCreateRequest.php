@@ -40,6 +40,7 @@ class ParcelTypeCreateRequest extends FormRequest
                 'required',
                 new CheckMediaExist( $imgPath )
             ],
+            'price' => 'nullable|numeric|min:0|max:999999999',
             'description' => 'required|max:255',
             'status' => 'required|in:n,y',
         ];

@@ -76,6 +76,16 @@
                                         </ul>
                                     </div>
                                 </div>
+                                
+                                <div class="form-group">
+                                    <label>
+                                        Price
+                                    </label>
+                                    <input type="text" class="form-control" name="price" placeholder="Enter price" value="{{old('price', $parcelType->price)}}">
+                                    @error('price')
+                                        <div class="text-danger">{{$message}}</div>
+                                    @enderror
+                                </div>
                                 <div class="form-group">
                                     <label>
                                         Details

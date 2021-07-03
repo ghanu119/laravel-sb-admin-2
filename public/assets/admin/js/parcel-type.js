@@ -17,6 +17,7 @@ $(document).ready(function(){
             { "data": "id", class:"text-center" },
             { "data": "name", class:"text-center" },
             { "data": "thumbnail_image_url", class:"text-center", 'orderable' : false },
+            { "data": "price", class:"text-center" },
             { "data": "status", class:"text-center" },
             { "data": "id", class:"text-center", 'orderable' : false }
         ],
@@ -31,6 +32,18 @@ $(document).ready(function(){
                     })
                     return $img[0].outerHTML;
                     
+                } 
+            },
+            { 
+                "targets": 'parcel_type_price', 
+                render: function( data, type, row  ){
+                   if( data > 0 ){
+                       var $rupeeIco = $("<i/>",{
+                           class: "fa fa-rupee-sign"
+                       })[0].outerHTML;
+                       return $rupeeIco + " " + data;
+                   }
+                   return " - "; 
                 } 
             },
             { 

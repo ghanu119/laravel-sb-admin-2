@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helper\UploadFile;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ParcelTypeCreateRequest;
 use App\Models\ParcelType;
@@ -11,6 +12,7 @@ use Illuminate\Support\Str;
 
 class ParcelTypeController extends Controller
 {
+    use UploadFile;
  
     /**
      * @name index
@@ -29,6 +31,8 @@ class ParcelTypeController extends Controller
         $orderColumns = [
             'id',
             'name',
+            '',
+            'price',
             'status',
             'created_at',
         ];
@@ -101,23 +105,7 @@ class ParcelTypeController extends Controller
 
         }
         
-        $parcelTypeImage = $request->get('parcel_type_image');
-        if( $parcelType->image != $parcelTypeImage ){
-            $parcelTypeImage = urldecode( $parcelTypeImage );
-            $fromFile = storage_path( config('app.common_upload_dir') . '/' . $parcelTypeImage );
-            $fileExt = pathinfo( $fromFile, PATHINFO_EXTENSION);
-            $newFileName = Str::slug( $request->get('name') . ' ' . time() . ' ' . Str::random( 8 ) ) . '.' . $fileExt;
-            $toFile = storage_path( ParcelType::IMAGE_PATH . '/' . $newFileName );
-            if( !file_exists( storage_path( ParcelType::IMAGE_PATH ) ) ){
-                mkdir( storage_path( ParcelType::IMAGE_PATH ), 0777, true );
-            }
-            // dd( $fromFile, $toFile );
-            if( !rename( $fromFile, $toFile ) ){
-                $newFileName = false;
-            }
-        }else{
-            $newFileName = $parcelTypeImage;
-        }
+        $newFileName = $this->move_file( $request->get('parcel_type_image'), $parcelType->image, $request->get('name'), ParcelType::IMAGE_PATH );
 
         if( $newFileName !== false ){
             if( $parcelType->name != $request->get('name') ){
@@ -127,6 +115,7 @@ class ParcelTypeController extends Controller
             $parcelType->name = $request->get('name');
             $parcelType->image = $newFileName;
             $parcelType->description = $request->get('description');
+            $parcelType->price = $request->get('price');
             // $parcelType->meta_keywords = $this->storeMetaKeywords( $request->get('keywords') );
             // $parcelType->meta_description = $request->get('meta_description');
             $parcelType->status = $request->get('status');
